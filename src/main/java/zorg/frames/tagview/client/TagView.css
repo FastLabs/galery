@@ -1,0 +1,50 @@
+.tagContainer {
+    display: block;
+    background: white;
+    border: 1px solid #DDD;
+    padding: 3px;
+    position: static;
+}
+
+.tagElement {
+    background: #67AE3F;
+    background: -webkit-gradient(linear,literal('left top'),literal('left bottom'),from(#77BB4E),to(#57A02F));
+    border: 1px solid #3F980E;
+    border-radius: 3px;
+    display: inline-block;
+    color: white;
+    margin: 2px;
+    outline: none;
+    padding: 0 1px;
+    vertical-align: middle;
+    cursor: default;
+}
+
+.internalTagElement {
+ display: inline-block;
+ padding: 0 2px 2px 5px;
+ border-top: 1px solid #9BCE7C;
+}
+
+.prefixIcon {
+   display: none;
+}
+
+.tagText {
+    color: white;
+    cursor: default;
+    padding-left: 5px;
+    vertical-align: middle;
+}
+
+@sprite .postfixIcon {
+    gwt-image: 'closeButton';
+    display: inline-block;
+    cursor: pointer;
+    margin: 3px;
+    vertical-align: middle;
+}
+
+@sprite .postfixIcon:hover {
+    gwt-image: 'closeButtonHover'
+}

@@ -1,0 +1,15 @@
+/*this should be moved in the document*/
+ol {
+ display: block;
+-webkit-margin-before: 1em;
+-webkit-margin-after: 1em;
+-webkit-margin-start: 0px;
+-webkit-margin-end: 0px;
+-webkit-padding-start: 40px;
+}
+.breadcrumb {
+    float: left;
+    list-style: none;
+    line-height: 28px;
+    font-size: 11px;
+}

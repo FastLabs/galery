@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module>
+  <!-- Inherit our applications main module.                      -->
+  <inherits name='zorg.Galery' />
+
+  <!-- Specify the path to any remote services.                   -->
+  <servlet path="/Galery/greet" class="zorg.server.GreetingServiceImpl" />
+
+</module>
