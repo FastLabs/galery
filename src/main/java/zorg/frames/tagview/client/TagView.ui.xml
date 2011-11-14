@@ -11,5 +11,12 @@
                 <span class="{tagStyle.postfixIcon}"></span>
             </span>
         </span>
+        <span class="{tagStyle.actionContainer}">
+            <span class="{tagStyle.addLabelContainer}">
+                <span class="{tagStyle.addButton}"></span>
+                <span class="{tagStyle.addLabel}">Add more</span>
+            </span>
+            <input type="text" class="{tagStyle.addInput}"></input>
+        </span>
     </div>
 </ui:UiBinder>

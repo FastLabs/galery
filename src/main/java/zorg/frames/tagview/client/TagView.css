@@ -48,3 +48,38 @@
 @sprite .postfixIcon:hover {
     gwt-image: 'closeButtonHover'
 }
+
+@sprite .addButton {
+  gwt-image: 'addButton';
+  margin: 3px;
+  vertical-align: middle;
+  display: inline-block;
+}
+
+.actionContainer {
+    vertical-align: middle;
+    overflow: hidden;
+    display: inline-block;
+    min-width: 40%;
+    margin: 1px 4px;
+}
+.addLabelContainer {
+    cursor: pointer;
+    margin-left: 2px;
+}
+
+.addLabel {
+  color: #36C;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+.addInput {
+   background: none;
+    border: 0;
+    font-family: Arial, sans-serif;
+    font-size: inherit;
+    outline: 0;
+    padding: 0;
+    width: 2px;
+}

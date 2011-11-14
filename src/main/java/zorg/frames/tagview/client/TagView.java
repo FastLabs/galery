@@ -37,6 +37,9 @@ public class TagView <T> extends Widget {
         @Source("close_gray.png")
         @ImageResource.ImageOptions(repeatStyle = ImageResource.RepeatStyle.None, height = 7, width = 7)
         ImageResource closeButtonHover();
+        @Source("add_blue.png")
+        @ImageResource.ImageOptions(repeatStyle = ImageResource.RepeatStyle.None, height = 8, width = 8)
+        ImageResource addButton();
     }
 
     public interface Style extends CssResource {
@@ -47,6 +50,11 @@ public class TagView <T> extends Widget {
         String postfixIcon();
         String prefixIcon();
         String internalTagElement();
+        String addLabelContainer();
+        String addLabel();
+        String addInput();
+        String actionContainer();
+        String addButton();
     }
 
     interface Template extends SafeHtmlTemplates {
