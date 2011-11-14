@@ -7,6 +7,8 @@ import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Widget;
@@ -24,8 +26,9 @@ public class TagView <T> extends Widget {
     
     private List<T> availableItems;
     private List<T> selectedItems;
-
     private Cell<T> cellRenderer;
+
+    private boolean acceptsRemovals = true;
 
     public interface Resources extends ClientBundle {
         @Source(Style.DEFAULT_CSS_RESOURCES)
@@ -58,9 +61,20 @@ public class TagView <T> extends Widget {
     }
 
     interface Template extends SafeHtmlTemplates {
-
+        @Template("<span class='{1}'>{0}</span>")
+        SafeHtml tagElement(SafeHtml interTagElement, String style);
+        @Template("<span class='{1}'>{0}</span>")
+        SafeHtml internalTagElement(SafeHtml tagFragments, String style);
+        @Template("<span class='{0}'></span>")
+        SafeHtml prefixIconFragment(String style);
+        @Template("<span class='{1}'>{0}</span>")
+        SafeHtml tagTextFragment(SafeHtml text, String style);
+        @Template("<span class='{0}'></span>")
+        SafeHtml postfixIconFragment(String style);
     }
-    
+
+
+    private Template template = GWT.create(Template.class);
     private Resources resources;
 
     @UiField(provided = true)
@@ -79,15 +93,31 @@ public class TagView <T> extends Widget {
         return DEFAULT_RESOURCES;
     }
 
-    public TagView() {
-        this(getDefaultResources());
+    public TagView(Cell<T> renderer) {
+        this(renderer, getDefaultResources());
 
     }
     
-    public TagView(Resources resources) {
+    public TagView(Cell<T> renderer, Resources resources) {
+        this.cellRenderer = renderer;
         this.tagStyle = resources.tagViewStyle();
         this.tagStyle.ensureInjected();
         DivElement rootElement = ourUiBinder.createAndBindUi(this);
         setElement(rootElement);
+    }
+    
+    public void setVisibleTags(List<T> data) {
+        SafeHtmlBuilder builder = new SafeHtmlBuilder();
+        for(T element : data) {
+            SafeHtmlBuilder cellContent = new SafeHtmlBuilder();
+            SafeHtmlBuilder textContent = new SafeHtmlBuilder();
+            cellRenderer.render(new Cell.Context(0,0,null), element, textContent );
+            cellContent.append(template.prefixIconFragment(resources.tagViewStyle().prefixIcon()))
+                    .append(template.tagTextFragment(textContent.toSafeHtml(), resources.tagViewStyle().tagText()))
+                    .append(template.postfixIconFragment(resources.tagViewStyle().postfixIcon()));
+            builder.append(template.tagElement(template.internalTagElement(cellContent.toSafeHtml(), resources.tagViewStyle().internalTagElement()),
+                    resources.tagViewStyle().tagElement()));
+        }
+        
     }
 }
