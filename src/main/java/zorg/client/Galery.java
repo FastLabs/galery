@@ -1,5 +1,9 @@
 package zorg.client;
 
+import com.google.gwt.cell.client.AbstractCell;
+import com.google.gwt.cell.client.Cell;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.*;
 import zorg.frames.tagview.client.TagView;
 import zorg.shared.FieldVerifier;
@@ -11,6 +15,9 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -35,7 +42,17 @@ public class Galery implements EntryPoint {
      * This is the entry point method.
      */
     public void onModuleLoad() {
-        RootPanel.get().add(new TagView<Void>());
+        TagView<String> tagView;
+        RootPanel.get().add(tagView = new  TagView<String>(new AbstractCell<String>() {
+            @Override
+            public void render(Context context, String value, SafeHtmlBuilder safeHtmlBuilder) {
+                safeHtmlBuilder.append(SafeHtmlUtils.fromSafeConstant(value));
+            }
+        }));
+        List<String> data = new ArrayList<String>();
+        data.add("123");
+        data.add("345");
+        tagView.setVisibleTags(data);
     }
 
 

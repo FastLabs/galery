@@ -4,7 +4,7 @@
     <ui:with field="tagStyle" type="zorg.frames.tagview.client.TagView.Style">
     </ui:with>
     <div class="{tagStyle.tagContainer}">
-        <span class="{tagStyle.tagElement}">
+        <!--<span class="{tagStyle.tagElement}">
             <span class="{tagStyle.internalTagElement}">
                 <span class="{tagStyle.prefixIcon}"></span>
                 <span class="{tagStyle.tagText}">test</span>
@@ -17,6 +17,6 @@
                 <span class="{tagStyle.addLabel}">Add more</span>
             </span>
             <input type="text" class="{tagStyle.addInput}"></input>
-        </span>
+        </span>-->
     </div>
 </ui:UiBinder>
