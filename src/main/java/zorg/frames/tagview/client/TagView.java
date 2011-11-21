@@ -75,6 +75,7 @@ public class TagView<T> extends Widget {
         String actionContainer();
 
         String addButton();
+        String actionContainerEditMode();
     }
 
     class UiIdGenerator {
@@ -146,7 +147,7 @@ public class TagView<T> extends Widget {
         rootElement = ourUiBinder.createAndBindUi(this);
         setElement(rootElement);
         rootElement.appendChild(getActionElement());
-        this.sinkEvents(Event.ONCLICK);
+        this.sinkEvents(Event.ONCLICK|Event.ONFOCUS);
     }
 
     public void setVisibleTags(List<T> data) {
@@ -197,11 +198,12 @@ public class TagView<T> extends Widget {
         String message = "";
         while (target.getParentElement() != null && !target.getClassName().equalsIgnoreCase(tagStyle.tagContainer())) {
           if(target.getClassName().contains(tagStyle.actionContainer())) {
-            message = "action";
+            onEdit();
             break;
           } else
           if(target.getClassName().contains(tagStyle.postfixIcon()))  {
               onRemove(target);
+              break;
           }
           target = target.getParentElement();
     //    if(element == getActionElement()) {
@@ -209,7 +211,17 @@ public class TagView<T> extends Widget {
         //super.onBrowserEvent(event);
         //        Window.alert("Add element ");
         }
-        Window.alert("" + message);
+       // Window.alert("" + message);
+    }
+
+
+    
+    private void onEdit() {
+        getActionElement().addClassName(tagStyle.actionContainerEditMode());
+        Element editElement = getActionElement().getLastChild().cast();
+        editElement.focus();
+        editElement.a
+
     }
     
     private void onRemove(Element element) {

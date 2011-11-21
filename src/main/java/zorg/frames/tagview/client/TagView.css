@@ -64,9 +64,14 @@
     min-width: 40%;
     margin: 1px 4px;
 }
+
 .addLabelContainer {
     cursor: pointer;
     margin-left: 2px;
+}
+
+.actionContainerEditMode .addLabelContainer {
+    display: none;
 }
 
 .addLabel {
