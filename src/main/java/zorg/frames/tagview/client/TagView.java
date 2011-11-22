@@ -2,7 +2,14 @@ package zorg.frames.tagview.client;
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.*;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.EventTarget;
+import com.google.gwt.dom.client.SpanElement;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
@@ -12,9 +19,10 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 
 
 import java.util.List;
@@ -23,7 +31,7 @@ import java.util.List;
  * User: Oleg Bulavitchi
  */
 public class TagView<T> extends Widget {
-    interface TagViewUiBinder extends UiBinder<DivElement, TagView> {
+    interface TagViewUiBinder extends UiBinder<SimplePanel, TagView> {
     }
 
     private static TagViewUiBinder ourUiBinder = GWT.create(TagViewUiBinder.class);
@@ -75,22 +83,19 @@ public class TagView<T> extends Widget {
         String actionContainer();
 
         String addButton();
+
         String actionContainerEditMode();
     }
 
     class UiIdGenerator {
         private int _next_gen = 0;
-        
+
         public String getNextId() {
-            return ":" +Integer.toString(_next_gen++, 36);
+            return ":" + Integer.toString(_next_gen++, 36);
         }
     }
 
     interface Template extends SafeHtmlTemplates {
-        //tag element templates
-       // @Template("<span id='{0}' class='{2}'>{1}</span>")
-       // SafeHtml tagElement(String id, SafeHtml interTagElement, String style);
-
         @Template("<span class='{1}'>{0}</span>")
         SafeHtml internalTagElement(SafeHtml tagFragments, String style);
 
@@ -103,15 +108,6 @@ public class TagView<T> extends Widget {
         @Template("<span class='{0}'></span>")
         SafeHtml postfixIconFragment(String style);
 
-        //add control element
-        //    @Template("<span class='{1}'>{0} <input type='text' class='{2}'/> </span>")
-        //    SafeHtml actionContainer(SafeHtml content, String style, String inputStyle);
-        @Template("<input type='text' class='{0}'/>")
-        SafeHtml input(String inputStyle);
-
-        @Template("<span class='{1}'> <span class='{2}'></span> <span class='{3}'>{0}</span></span>")
-        SafeHtml addLabelContainer(SafeHtml label, String addLabelContainer, String addButtonStyle, String addLabelStyle);
-
     }
 
 
@@ -120,14 +116,18 @@ public class TagView<T> extends Widget {
 
     @UiField(provided = true)
     Style tagStyle;
+    @UiField
+    FlowPanel actionElement;
+    @UiField
+    TextBox addTagBox;
 
     public TagView(Style style) {
         this.tagStyle = style;
     }
 
     private static Resources DEFAULT_RESOURCES;
-    private SpanElement actionElement;
-    private DivElement rootElement;
+    private SimplePanel rootElement;
+
     public static Resources getDefaultResources() {
         if (DEFAULT_RESOURCES == null) {
             DEFAULT_RESOURCES = GWT.create(Resources.class);
@@ -145,9 +145,12 @@ public class TagView<T> extends Widget {
         this.tagStyle = resources.tagViewStyle();
         this.tagStyle.ensureInjected();
         rootElement = ourUiBinder.createAndBindUi(this);
-        setElement(rootElement);
-        rootElement.appendChild(getActionElement());
-        this.sinkEvents(Event.ONCLICK|Event.ONFOCUS);
+        setElement(rootElement.getElement());
+        this.sinkEvents(Event.ONCLICK);
+    }
+    @UiHandler("addTagBox")
+    void onBlur(BlurEvent event) {
+        actionElement.removeStyleDependentName(tagStyle.actionContainerEditMode());
     }
 
     public void setVisibleTags(List<T> data) {
@@ -160,74 +163,56 @@ public class TagView<T> extends Widget {
             cellContent.append(template.prefixIconFragment(tagStyle.prefixIcon()))
                     .append(template.tagTextFragment(textContent.toSafeHtml(), tagStyle.tagText()))
                     .append(template.postfixIconFragment(tagStyle.postfixIcon()));
-            
+
             SpanElement tagElement = Document.get().createSpanElement();
             tagElement.setClassName(tagStyle.tagElement());
             tagElement.setId(idGenerator.getNextId());
             tagElement.setInnerHTML(template.internalTagElement(cellContent.toSafeHtml(), tagStyle.internalTagElement()).asString());
-            rootElement.appendChild(tagElement);
+            rootElement.getElement().appendChild(tagElement);
         }
-       rootElement.appendChild(actionElement);
-
-    }
-
-    private Element getActionElement() {
-        if (actionElement == null) {
-            actionElement = Document.get().createSpanElement();
-            actionElement.setClassName(tagStyle.actionContainer());
-            SafeHtmlBuilder action = new SafeHtmlBuilder();
-            SafeHtml addLabel = template.addLabelContainer(SafeHtmlUtils.fromSafeConstant("Add more")
-                    , tagStyle.addLabelContainer()
-                    , tagStyle.addButton()
-                    , tagStyle.addLabel());
-            action.append(addLabel).append(template.input(tagStyle.addInput()));
-            actionElement.setInnerHTML(action.toSafeHtml().asString());
-        }
-        return actionElement;
+        rootElement.getElement().appendChild(actionElement.getElement());
     }
 
     @Override
     public void onBrowserEvent(Event event) {
         EventTarget eventTarget = event.getEventTarget();
-        if(!Element.is(eventTarget)) {
+        if (!Element.is(eventTarget)) {
             return;
         }
-        
+
         Element element = eventTarget.cast();
         Element target = element;
         String message = "";
-        while (target.getParentElement() != null && !target.getClassName().equalsIgnoreCase(tagStyle.tagContainer())) {
-          if(target.getClassName().contains(tagStyle.actionContainer())) {
-            onEdit();
-            break;
-          } else
-          if(target.getClassName().contains(tagStyle.postfixIcon()))  {
-              onRemove(target);
-              break;
-          }
-          target = target.getParentElement();
-    //    if(element == getActionElement()) {
-
-        //super.onBrowserEvent(event);
-        //        Window.alert("Add element ");
+        if (event.getType().equals("click")) {
+            while (target.getParentElement() != null && !target.getClassName().equalsIgnoreCase(tagStyle.tagContainer())) {
+                if (target.getClassName().contains(tagStyle.actionContainer())) {
+                    onEdit();
+                    break;
+                } else if (target.getClassName().contains(tagStyle.postfixIcon())) {
+                    onRemove(target);
+                    break;
+                }
+                target = target.getParentElement();
+            }
+        } else {
+            Window.alert(event.getType());
+            super.onBrowserEvent(event);
         }
-       // Window.alert("" + message);
+
     }
 
 
-    
     private void onEdit() {
-        getActionElement().addClassName(tagStyle.actionContainerEditMode());
-        Element editElement = getActionElement().getLastChild().cast();
-        editElement.focus();
-        editElement.a
+        actionElement.addStyleName(tagStyle.actionContainerEditMode());
+        addTagBox.setFocus(true);
+        //editElement.a
 
     }
-    
+
     private void onRemove(Element element) {
         Element toBeRemoved = element.getParentElement().getParentElement();
-        String id = toBeRemoved.getId();
+        //String id = toBeRemoved.getId();
         toBeRemoved.removeFromParent();
-        Window.alert("removed" + id);
+        //Window.alert("removed" + id);
     }
 }

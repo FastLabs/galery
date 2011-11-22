@@ -3,20 +3,27 @@
 
     <ui:with field="tagStyle" type="zorg.frames.tagview.client.TagView.Style">
     </ui:with>
-    <div class="{tagStyle.tagContainer}">
+    <ui:style>
+        .temp{
+            display: inline;
+        }
+    </ui:style>
+    <g:SimplePanel styleName="{tagStyle.tagContainer}">
         <!--<span class="{tagStyle.tagElement}">
             <span class="{tagStyle.internalTagElement}">
                 <span class="{tagStyle.prefixIcon}"></span>
                 <span class="{tagStyle.tagText}">test</span>
                 <span class="{tagStyle.postfixIcon}"></span>
             </span>
-        </span>
-        <span class="{tagStyle.actionContainer}">
-            <span class="{tagStyle.addLabelContainer}">
-                <span class="{tagStyle.addButton}"></span>
-                <span class="{tagStyle.addLabel}">Add more</span>
-            </span>
-            <input type="text" class="{tagStyle.addInput}"></input>
-        </span>-->
-    </div>
+        </span>      -->
+        <g:FlowPanel ui:field="actionElement" styleName="{tagStyle.actionContainer}">
+            <g:HTML styleName="{style.temp}">
+                <span class="{tagStyle.addLabelContainer}">
+                    <span class="{tagStyle.addButton}"></span>
+                    <span class="{tagStyle.addLabel}">Add more</span>
+                </span>
+            </g:HTML>
+            <g:TextBox ui:field="addTagBox" styleName="{tagStyle.addInput}"/>
+        </g:FlowPanel>
+    </g:SimplePanel>
 </ui:UiBinder>
