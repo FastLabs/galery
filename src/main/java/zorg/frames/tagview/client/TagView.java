@@ -104,7 +104,8 @@ public class TagView<T> extends Composite {
         selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
             @Override
             public void onSelectionChange(SelectionChangeEvent event) {
-                Window.alert(selectionModel.getLastSelectedObject().toString());
+                tagContainer.addItem(selectionModel.getLastSelectedObject().toString());
+                popList.hide();
             }
         });
     }

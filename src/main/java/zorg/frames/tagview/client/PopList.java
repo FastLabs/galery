@@ -32,6 +32,10 @@ public class PopList <T> extends Composite {
             }
             instance.show();
         }
+
+        public static void hidePopup() {
+            instance.hide();
+        }
     }
 
     interface PopListUiBinder extends UiBinder<HTMLPanel, PopList> {
@@ -58,5 +62,9 @@ public class PopList <T> extends Composite {
 
     public void show(int x, int y ) {
         Popup.show(this, x, y);
+    }
+
+    public void hide() {
+      Popup.hidePopup();
     }
 }
