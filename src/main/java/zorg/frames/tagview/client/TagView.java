@@ -6,10 +6,7 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.SpanElement;
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
@@ -30,8 +27,8 @@ import java.util.List;
 /**
  * User: Oleg Bulavitchi
  */
-public class TagView<T> extends Widget {
-    interface TagViewUiBinder extends UiBinder<SimplePanel, TagView> {
+public class TagView<T> extends Composite {
+    interface TagViewUiBinder extends UiBinder<FlowPanel, TagView> {
     }
 
     private static TagViewUiBinder ourUiBinder = GWT.create(TagViewUiBinder.class);
@@ -39,21 +36,12 @@ public class TagView<T> extends Widget {
     private List<T> availableItems;
     private List<T> selectedItems;
     private Cell<T> cellRenderer;
-    private final UiIdGenerator idGenerator = new UiIdGenerator();
+
     private boolean acceptsRemovals = true;
 
     public interface Resources extends ClientBundle {
         @Source(Style.DEFAULT_CSS_RESOURCES)
         Style tagViewStyle();
-
-        @Source("close_semitransparent.png")
-        @ImageResource.ImageOptions(repeatStyle = ImageResource.RepeatStyle.None, height = 7, width = 7)
-        ImageResource closeButton();
-
-        @Source("close_gray.png")
-        @ImageResource.ImageOptions(repeatStyle = ImageResource.RepeatStyle.None, height = 7, width = 7)
-        ImageResource closeButtonHover();
-
         @Source("add_blue.png")
         @ImageResource.ImageOptions(repeatStyle = ImageResource.RepeatStyle.None, height = 8, width = 8)
         ImageResource addButton();
@@ -61,57 +49,15 @@ public class TagView<T> extends Widget {
 
     public interface Style extends CssResource {
         public static final String DEFAULT_CSS_RESOURCES = "zorg/frames/tagview/client/TagView.css";
-
         String tagContainer();
-
-        String tagElement();
-
-        String tagText();
-
-        String postfixIcon();
-
-        String prefixIcon();
-
-        String internalTagElement();
-
         String addLabelContainer();
-
         String addLabel();
-
         String addInput();
-
         String actionContainer();
-
         String addButton();
-
         String actionContainerEditMode();
     }
 
-    class UiIdGenerator {
-        private int _next_gen = 0;
-
-        public String getNextId() {
-            return ":" + Integer.toString(_next_gen++, 36);
-        }
-    }
-
-    interface Template extends SafeHtmlTemplates {
-        @Template("<span class='{1}'>{0}</span>")
-        SafeHtml internalTagElement(SafeHtml tagFragments, String style);
-
-        @Template("<span class='{0}'></span>")
-        SafeHtml prefixIconFragment(String style);
-
-        @Template("<span class='{1}'>{0}</span>")
-        SafeHtml tagTextFragment(SafeHtml text, String style);
-
-        @Template("<span class='{0}'></span>")
-        SafeHtml postfixIconFragment(String style);
-
-    }
-
-
-    private Template template = GWT.create(Template.class);
     private Resources resources;
 
     @UiField(provided = true)
@@ -120,13 +66,18 @@ public class TagView<T> extends Widget {
     FlowPanel actionElement;
     @UiField
     TextBox addTagBox;
+    @UiField
+    TagContainer tagContainer;
+    @UiField
+    Label addElementLabel;
+    @UiField
+    Label addButton;
 
     public TagView(Style style) {
         this.tagStyle = style;
     }
 
     private static Resources DEFAULT_RESOURCES;
-    private SimplePanel rootElement;
 
     public static Resources getDefaultResources() {
         if (DEFAULT_RESOURCES == null) {
@@ -144,36 +95,34 @@ public class TagView<T> extends Widget {
         this.cellRenderer = renderer;
         this.tagStyle = resources.tagViewStyle();
         this.tagStyle.ensureInjected();
-        rootElement = ourUiBinder.createAndBindUi(this);
-        setElement(rootElement.getElement());
-        this.sinkEvents(Event.ONCLICK);
+        initWidget( ourUiBinder.createAndBindUi(this));
     }
+
     @UiHandler("addTagBox")
     void onBlur(BlurEvent event) {
-        actionElement.removeStyleDependentName(tagStyle.actionContainerEditMode());
+        actionElement.removeStyleName(tagStyle.actionContainerEditMode());
     }
+    @UiHandler("addTagBox")
+    void onFocus(FocusEvent event) {
+        actionElement.addStyleName(tagStyle.actionContainerEditMode());
+    }
+    @UiHandler({"addElementLabel", "addButton"})
+    void onAddTag(ClickEvent event) {
+        addTagBox.setFocus(true);
+    }
+
+
 
     public void setVisibleTags(List<T> data) {
-        actionElement.removeFromParent();
-        SafeHtmlBuilder builder = new SafeHtmlBuilder();
+        this.tagContainer.removeAll();
         for (T element : data) {
-            SafeHtmlBuilder cellContent = new SafeHtmlBuilder();
             SafeHtmlBuilder textContent = new SafeHtmlBuilder();
             cellRenderer.render(new Cell.Context(0, 0, null), element, textContent);
-            cellContent.append(template.prefixIconFragment(tagStyle.prefixIcon()))
-                    .append(template.tagTextFragment(textContent.toSafeHtml(), tagStyle.tagText()))
-                    .append(template.postfixIconFragment(tagStyle.postfixIcon()));
-
-            SpanElement tagElement = Document.get().createSpanElement();
-            tagElement.setClassName(tagStyle.tagElement());
-            tagElement.setId(idGenerator.getNextId());
-            tagElement.setInnerHTML(template.internalTagElement(cellContent.toSafeHtml(), tagStyle.internalTagElement()).asString());
-            rootElement.getElement().appendChild(tagElement);
+            this.tagContainer.addItem(textContent.toSafeHtml().asString());
         }
-        rootElement.getElement().appendChild(actionElement.getElement());
     }
 
-    @Override
+   /* @Override
     public void onBrowserEvent(Event event) {
         EventTarget eventTarget = event.getEventTarget();
         if (!Element.is(eventTarget)) {
@@ -199,15 +148,8 @@ public class TagView<T> extends Widget {
             super.onBrowserEvent(event);
         }
 
-    }
+    }*/
 
-
-    private void onEdit() {
-        actionElement.addStyleName(tagStyle.actionContainerEditMode());
-        addTagBox.setFocus(true);
-        //editElement.a
-
-    }
 
     private void onRemove(Element element) {
         Element toBeRemoved = element.getParentElement().getParentElement();
