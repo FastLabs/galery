@@ -42,17 +42,21 @@ public class Galery implements EntryPoint {
      * This is the entry point method.
      */
     public void onModuleLoad() {
-        TagView<String> tagView;
-        RootPanel.get().add(tagView = new  TagView<String>(new AbstractCell<String>() {
+      //  RootPanel.get().add(new TestWidget());
+        
+        List<String> data = new ArrayList<String>();
+        data.add("123");
+        data.add("345");
+        Cell <String> cell = new AbstractCell<String>() {
             @Override
             public void render(Context context, String value, SafeHtmlBuilder safeHtmlBuilder) {
                 safeHtmlBuilder.append(SafeHtmlUtils.fromSafeConstant(value));
             }
-        }));
-        List<String> data = new ArrayList<String>();
-        data.add("123");
-        data.add("345");
+        };
+        TagView<String> tagView = new TagView<String>(cell, data) ;
+        RootPanel.get().add(tagView);
         tagView.setVisibleTags(data);
+
     }
 
 

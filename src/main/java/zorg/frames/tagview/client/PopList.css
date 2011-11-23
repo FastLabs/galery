@@ -1,0 +1,52 @@
+.containerStyle {
+    margin-left: 1px;
+}
+
+.contentStyle {
+    margin-top: 1px;
+}
+
+.listContainer {
+    opacity: 1;
+    top: 3px;
+    -moz-transition: opacity 0.218s ease 0s;
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    cursor: default;
+    font-size: 13px;
+    margin: 0;
+    outline: medium none;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    width: 250px;
+}
+
+.cellListWidget {
+
+}
+
+.cellListEvenItem, .cellListOddItem {
+    cursor: pointer;
+    padding: 6px 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+}
+
+.cellListOddItem:hover, .cellListEvenItem:hover {
+    background-color: #F1F1F1;
+}
+
+.cellListKeyboardSelectedItem {
+}
+
+.cellListSelectedItem {
+    background: #63ABF7;
+    border: 1px solid #777799;
+    box-shadow: 0 0 1px #497FB8;
+    color: #FFFFFF;
+}
+
+

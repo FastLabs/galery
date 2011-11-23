@@ -1,16 +1,13 @@
-<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-             xmlns:g='urn:import:com.google.gwt.user.client.ui'
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder' xmlns:g='urn:import:com.google.gwt.user.client.ui'
              xmlns:my='urn:import:zorg.frames.tagview.client'>
-
-    <ui:with field="tagStyle" type="zorg.frames.tagview.client.TagView.Style">
-    </ui:with>
+    <ui:with field="tagStyle" type="zorg.frames.tagview.client.TagView.Style"></ui:with>
     <g:FlowPanel styleName="{tagStyle.tagContainer}">
         <my:TagContainer ui:field="tagContainer"/>
         <g:FlowPanel ui:field="actionElement" styleName="{tagStyle.actionContainer}">
-                <g:FlowPanel styleName="{tagStyle.addLabelContainer}">
-                    <g:Label ui:field="addButton" styleName="{tagStyle.addButton}"/>
-                    <g:Label ui:field="addElementLabel" styleName="{tagStyle.addLabel}">Add more</g:Label>
-                </g:FlowPanel>
+            <g:FlowPanel styleName="{tagStyle.addLabelContainer}">
+                <g:Label ui:field="addButton" styleName="{tagStyle.addButton}"/>
+                <g:Label ui:field="addElementLabel" styleName="{tagStyle.addLabel}">Add more</g:Label>
+            </g:FlowPanel>
             <g:TextBox ui:field="addTagBox" styleName="{tagStyle.addInput}"/>
         </g:FlowPanel>
     </g:FlowPanel>

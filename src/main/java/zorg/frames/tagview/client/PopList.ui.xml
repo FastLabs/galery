@@ -1,0 +1,10 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'
+             xmlns:c="urn:import:com.google.gwt.user.cellview.client">
+
+    <ui:with field="resources" type="zorg.frames.tagview.client.PopListResources"/>
+
+    <g:HTMLPanel styleName="{resources.cellListStyle.listContainer}">
+        <c:CellList ui:field="itemList"/>
+    </g:HTMLPanel>
+</ui:UiBinder>

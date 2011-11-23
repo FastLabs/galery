@@ -1,6 +1,6 @@
 .tagElement {
     background: #67AE3F;
-    background: -webkit-gradient(linear,literal('left top'),literal('left bottom'),from(#77BB4E),to(#57A02F));
+    background: -webkit-gradient(linear, literal('left top'), literal('left bottom'), from(#77BB4E), to(#57A02F));
     border: 1px solid #3F980E;
     border-radius: 3px;
     display: inline-block;
