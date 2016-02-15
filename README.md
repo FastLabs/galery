@@ -27,8 +27,10 @@ Available Cmmands
 - **Graphic Shell** executes a graphic command and sends the results to the renderer
 - **Canvas** represents the rendering area
 - **Renderer** renders the canvas onto specific output, in this case system console 
+
 ##Implementation details
 Plesae check the diagram
+
 ##Execution
 Git and Apache Maven is required
 Current releaset version is tagged with RELEASE1 tag, please run: git checkout RELEASE1
