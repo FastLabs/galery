@@ -5,7 +5,6 @@ Is a text based rendering engine prototype. Explores some aspects of OOP.
 The diagram below ilustrates the main components of the application and their interactions
 <pre>
 Available Cmmands
-
 +----------------------+     +---------------------------------+
 | Line Command         |     |                                 |
 +----------------------+     | +----------------------------+  |
@@ -27,16 +26,10 @@ Available Cmmands
 - **Sketch Command Processor** parses validates and if valid pases the command for execution to the **Graphic Shell** component.
 - **Graphic Shell** executes a graphic command and sends the results to the renderer
 - **Canvas** represents the rendering area
-- **Renderer** renders the canvas onto specific output, in this case system console.
-- 
-
+- **Renderer** renders the canvas onto specific output, in this case system console 
 ##Implementation details
 Plesae check the diagram
-
 ##Execution
 Git and Apache Maven is required
 Current releaset version is tagged with RELEASE1 tag, please run: git checkout RELEASE1
 Execute the application with the following command: mvn
-
-
-
